@@ -1,0 +1,106 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-currencies-table
+      author: basnukaev
+      changes:
+        - createTable:
+            tableName: currencies
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: code
+                  type: varchar(3)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 002-create-exchange-rates-table
+      author: basnukaev
+      changes:
+        - createTable:
+            tableName: exchange_rates
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: base_currency_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_exchange_rates_base_currency
+                    references: currencies(id)
+              - column:
+                  name: target_currency_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_exchange_rates_target_currency
+                    references: currencies(id)
+              - column:
+                  name: rate
+                  type: decimal(19,6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 003-add-initial-currencies
+      author: basnukaev
+      changes:
+        - insert:
+            tableName: currencies
+            columns:
+              - column:
+                  name: code
+                  value: "EUR"
+              - column:
+                  name: name
+                  value: "Euro"
+        - insert:
+            tableName: currencies
+            columns:
+              - column:
+                  name: code
+                  value: "USD"
+              - column:
+                  name: name
+                  value: "US Dollar"
+        - insert:
+            tableName: currencies
+            columns:
+              - column:
+                  name: code
+                  value: "RUB"
+              - column:
+                  name: name
+                  value: "Russian Ruble"
+        - insert:
+            tableName: currencies
+            columns:
+              - column:
+                  name: code
+                  value: "GBP"
+              - column:
+                  name: name
+                  value: "British Pound"

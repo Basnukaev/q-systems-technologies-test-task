@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exchange Rates</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .currency-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            margin-bottom: 20px;
+        }
+        .currency-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .currency-selector {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .currency-btn {
+            margin: 5px;
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: 500;
+        }
+        .currency-btn.active {
+            background-color: #0d6efd;
+            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+        }
+        .rate-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+        .currency-pair {
+            font-size: 18px;
+            color: #495057;
+        }
+        .date-badge {
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        .exchange-icon {
+            color: #0d6efd;
+            font-size: 1.5em;
+            margin: 0 10px;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0099ff 100%);
+            color: white;
+            padding: 40px 0 30px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 20px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-section">
+        <div class="container">
+            <h1 class="mb-4">Currency Exchange Rates</h1>
+            <div class="currency-selector">
+                <div class="d-flex flex-wrap justify-content-center">
+                    <a th:each="currency : ${currencies}"
+                       th:href="@{'/rates/' + ${currency.code}}"
+                       th:text="${currency.code}"
+                       th:class="${currency.code == selectedCurrency ? 'btn btn-light currency-btn active' : 'btn btn-light currency-btn'}">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row" th:if="${rates != null and !rates.empty}">
+            <div class="col-12">
+                <h3 class="mb-4 text-center">
+                    <span class="badge bg-primary" th:text="${'Base Currency: ' + selectedCurrency}"></span>
+                </h3>
+            </div>
+            <div class="col-md-6 col-lg-4" th:each="rate : ${rates}">
+                <div class="currency-card p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="currency-pair">
+                            <span th:text="${selectedCurrency}"></span>
+                            <i class="bi bi-arrow-right exchange-icon"></i>
+                            <span th:text="${rate.targetCurrencyCode}"></span>
+                        </span>
+                    </div>
+                    <div class="rate-value mb-3" th:text="${#numbers.formatDecimal(rate.rate, 1, 4)}"></div>
+                    <div class="date-badge">
+                        <i class="bi bi-calendar3"></i>
+                        <span th:text="${#temporals.format(rate.date, 'dd MMM yyyy')}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-info text-center" th:if="${rates != null and rates.empty}">
+            <i class="bi bi-info-circle me-2"></i>
+            No exchange rates available for the selected currency.
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

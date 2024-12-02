@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: exchange-rate
+  datasource:
+    url: jdbc:postgresql://localhost:5433/exchange_rate
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      connection-timeout: 10000
+      auto-commit: false
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+exchange:
+  api:
+    key: b749c3570848a829d3438bd541fa420e # Не стал скрывать ключ, т.к. это тестовое задание
+
+server:
+  port: 8085
